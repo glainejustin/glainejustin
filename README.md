@@ -14,3 +14,5 @@ I treat AI as a core component of my development stack, allowing me to focus on 
 
 ## 📫 Connect With Me
 * [Read my latest articles on Medium](https://medium.com/@glainejustin)
+* Connect in Linkedln (https://www.linkedin.com/in/glaine-justin-0a3682164/)
+  
