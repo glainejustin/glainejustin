@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Generate glainejustin terminal ASCII assets - typed portrait + 3d wordmark stub.
-Requires no external deps. Produces deterministic SVGs matching AVIVA layout widths (370/490)."""
+Requires no external deps. Produces deterministic SVGs matching terminal layout widths (370/490)."""
 
 import pathlib, re, html, textwrap
 
@@ -16,8 +16,8 @@ GLAINE_ASCII = r"""
 
 JUSTIN_SUB = "glainejustin • builder • product • love"
 
-# Simple hand-built mono portrait — pays homage to Aviva's ASCII photo without needing an actual photo.
-# Keep width ~370 at 12px mono ~ 30 cols
+# Simple hand-built mono portrait — pays homage to 's ASCII photo without needing an actual photo.
+# Simple hand-built mono portrait — no external photo needed.
 PORTRAIT_LINES = [
     "  .------------------------------.  ",
     "  |         ░░░░░░░░░░░░         |  ",
@@ -60,7 +60,7 @@ def _svg_text(lines, width, title):
 '''
 
 def _wordmark_svg():
-    # Loosely inspired by Aviva 3D ASCII wordmark — extruded block letters for GLAINE + JUSTIN
+    # Extruded block letters for GLAINE + JUSTIN
     lines = [
         "  ┏━┓ ╻  ┏━┓╻┏┓╻┏━╸      ┏┓╻╻ ╻┏━┓╺┳╸╻┏┓╻",
         "  ┃┓┃ ┃  ┣━┫┃┃┗┫┣╸   ─── ┃┗┫┃ ┃┗━┓ ┃ ┃┃┗┫",

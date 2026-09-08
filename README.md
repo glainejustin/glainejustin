@@ -4,7 +4,7 @@
      portrait: python scripts/make_glaine_ascii.py
      wordmark: python scripts/make_glaine_ascii.py (extruded block)
      contrib graph: python scripts/build_contrib_heatmap.py (daily via Actions)
-     inspired by avi's terminal profile — with love by glainejustin ◈ -->
+     with love by glainejustin ◈ -->
 <h3><code>glaine@github ~ $ whoami</code></h3>
 <table>
 <tr>
