@@ -8,8 +8,8 @@
 <h3><code>glaine@github ~ $ whoami</code></h3>
 <table>
 <tr>
-<td valign="top"><img src="./glaine-ascii.svg?v=2" width="370" alt="glainejustin — ASCII portrait" /></td>
-<td valign="top"><img src="./wordmark.svg?v=2" width="490" alt="GLAINE — 3D ASCII wordmark" /></td>
+<td valign="top"><img src="./glaine-ascii.svg?v=3" width="370" alt="glainejustin — ASCII portrait" /></td>
+<td valign="top"><img src="./wordmark.svg?v=3" width="490" alt="GLAINE — 3D ASCII wordmark" /></td>
 </tr>
 </table>
 <br>
@@ -17,7 +17,7 @@
 <!-- animated contribution graph: real data, boxes reveal cell by cell
      (regenerated daily by .github/workflows/update-profile-art.yml) -->
 <h3><code>glaine@github ~ $ ./contributions.sh</code></h3>
-<img src="./contrib-heatmap.svg?v=2" width="860" alt="glainejustin's GitHub contribution graph — auto-refreshed daily" />
+<img src="./contrib-heatmap.svg?v=3" width="860" alt="glainejustin's GitHub contribution graph — auto-refreshed daily" />
 <br>
 <br>
 <h3><code>glaine@github ~ $ ./links.sh</code></h3>
