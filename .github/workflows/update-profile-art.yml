@@ -9,6 +9,7 @@ on:
     paths:
       - "scripts/**"
       - ".github/workflows/update-profile-art.yml"
+      - "README.md"
 
 permissions:
   contents: write
@@ -26,26 +27,21 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PROFILE_USER: glainejustin
         run: |
-          pip install -q pillow numpy
-          # Portrait: real avatar → typing ASCII (only if source-prepped exists; else skip)
+          pip install -q pillow numpy feedparser
           if [ -f source-prepped.png ]; then
             python scripts/make_ascii_svg.py source-prepped.png glaine-ascii.svg
           else
             echo "no source-prepped.png — skipping portrait rebuild"
           fi
-          # Wordmark: GLAINE 3D rock (uses bahnschrift/arial fallback)
           WORDMARK_TEXT=GLAINE python scripts/make_wordmark_svg.py --mode rock --out wordmark.svg
-          # Patch title inside wordmark from avi → glaine
           python -c "import pathlib; p=pathlib.Path('wordmark.svg'); p.write_text(p.read_text(encoding='utf-8').replace('avi@github','glaine@github'), encoding='utf-8')"
-          # Heatmap: real GraphQL if token works, else animated fake greens (never a placeholder)
           python scripts/build_contrib_heatmap.py
-          # Guard: Actions placeholder is 500 bytes and static — rebuild animated fallback if rendered placeholder
           python -c "
 import pathlib
 p = pathlib.Path('contrib-heatmap.svg')
 t = p.read_text(encoding='utf-8')
 if 'token missing' in t or t.count('<animate') < 10:
-    import datetime, random, pathlib as pl
+    import random, pathlib as pl
     out = pl.Path('contrib-heatmap.svg')
     random.seed(1337)
     weeks=[[ (0 if (r:=random.random())<0.45 else random.randint(1,3) if r<0.75 else random.randint(4,7) if r<0.90 else random.randint(8,12)) for _ in range(7)] for _ in range(52)]
@@ -58,19 +54,22 @@ if 'token missing' in t or t.count('<animate') < 10:
         y=30
         for di,c in enumerate(w):
             d=wi*0.018+di*0.004
-            rects.append(f'<rect x="{x}" y="{y}" width="11" height="11" rx="2" fill="{lvl(c)}" opacity="0"><animate attributeName="opacity" from="0" to="1" begin="{d:.2f}s" dur="0.45s" fill="freeze"/><animate attributeName="y" from="{y+6}" to="{y}" begin="{d:.2f}s" dur="0.45s" fill="freeze"/></rect>')
+            rects.append(f'<rect x=\"{x}\" y=\"{y}\" width=\"11\" height=\"11\" rx=\"2\" fill=\"{lvl(c)}\" opacity=\"0\"><animate attributeName=\"opacity\" from=\"0\" to=\"1\" begin=\"{d:.2f}s\" dur=\"0.45s\" fill=\"freeze\"/><animate attributeName=\"y\" from=\"{y+6}\" to=\"{y}\" begin=\"{d:.2f}s\" dur=\"0.45s\" fill=\"freeze\"/></rect>')
             y+=14
         x+=14
     pad=14
     header=f'{total} contributions in the last year'
-    svg=f'''<svg xmlns="http://www.w3.org/2000/svg" width="860" height="136" viewBox="0 0 860 136" role="img" aria-label="contribution graph"><defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#111722"/><stop offset="1" stop-color="#0d1117"/></linearGradient></defs><rect width="860" height="136" rx="12" fill="url(#bg)"/><rect x="0.5" y="0.5" width="859" height="135" rx="12" fill="none" stroke="#30363d"/><line x1="0" y1="26" x2="860" y2="26" stroke="#30363d"/><circle cx="18" cy="13" r="4.5" fill="#ff5f56"/><circle cx="33" cy="13" r="4.5" fill="#ffbd2e"/><circle cx="48" cy="13" r="4.5" fill="#27c93f"/><text x="430" y="17" fill="#7d8590" font-family="ui-monospace, monospace" font-size="11" text-anchor="middle">glaine@github: ~$ ./contributions.sh</text><text x="{pad}" y="50" fill="#8b949e" font-family="ui-monospace, monospace" font-size="11">{header}</text><g>{"" .join(rects)}</g><text x="{pad}" y="122" fill="#30363d" font-family="ui-monospace, monospace" font-size="10">less</text><g transform="translate({pad+30},114)"><rect width="10" height="10" rx="2" fill="#161b22" stroke="#30363d"/><rect x="12" width="10" height="10" rx="2" fill="#0e4429"/><rect x="24" width="10" height="10" rx="2" fill="#006d32"/><rect x="36" width="10" height="10" rx="2" fill="#26a641"/><rect x="48" width="10" height="10" rx="2" fill="#39d353"/></g><text x="{pad+64}" y="122" fill="#30363d" font-family="ui-monospace, monospace" font-size="10">more</text></svg>'''
+    svg=f'''<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"860\" height=\"136\" viewBox=\"0 0 860 136\" role=\"img\" aria-label=\"contribution graph\"><defs><linearGradient id=\"bg\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#111722\"/><stop offset=\"1\" stop-color=\"#0d1117\"/></linearGradient></defs><rect width=\"860\" height=\"136\" rx=\"12\" fill=\"url(#bg)\"/><rect x=\"0.5\" y=\"0.5\" width=\"859\" height=\"135\" rx=\"12\" fill=\"none\" stroke=\"#30363d\"/><line x1=\"0\" y1=\"26\" x2=\"860\" y2=\"26\" stroke=\"#30363d\"/><circle cx=\"18\" cy=\"13\" r=\"4.5\" fill=\"#ff5f56\"/><circle cx=\"33\" cy=\"13\" r=\"4.5\" fill=\"#ffbd2e\"/><circle cx=\"48\" cy=\"13\" r=\"4.5\" fill=\"#27c93f\"/><text x=\"430\" y=\"17\" fill=\"#7d8590\" font-family=\"ui-monospace, monospace\" font-size=\"11\" text-anchor=\"middle\">glaine@github: ~$ ./contributions.sh</text><text x=\"{pad}\" y=\"50\" fill=\"#8b949e\" font-family=\"ui-monospace, monospace\" font-size=\"11\">{header}</text><g>{\"\".join(rects)}</g><text x=\"{pad}\" y=\"122\" fill=\"#30363d\" font-family=\"ui-monospace, monospace\" font-size=\"10\">less</text><g transform=\"translate({pad+30},114)\"><rect width=\"10\" height=\"10\" rx=\"2\" fill=\"#161b22\" stroke=\"#30363d\"/><rect x=\"12\" width=\"10\" height=\"10\" rx=\"2\" fill=\"#0e4429\"/><rect x=\"24\" width=\"10\" height=\"10\" rx=\"2\" fill=\"#006d32\"/><rect x=\"36\" width=\"10\" height=\"10\" rx=\"2\" fill=\"#26a641\"/><rect x=\"48\" width=\"10\" height=\"10\" rx=\"2\" fill=\"#39d353\"/></g><text x=\"{pad+64}\" y=\"122\" fill=\"#30363d\" font-family=\"ui-monospace, monospace\" font-size=\"10\">more</text></svg>'''
     out.write_text(svg, encoding='utf-8')
     print(f'fallback animated heatmap {len(svg)} bytes, total {total}')
 else:
-    print(f'heatmap ok {len(t)} bytes, anim {t.count("<animate")}')
+    print(f'heatmap ok {len(t)} bytes, anim {t.count(\"<animate\")}')
 "
           echo "--- artefacts ---"
           ls -lh *.svg; echo "--- animate counts ---"; grep -c '<animate' wordmark.svg glaine-ascii.svg contrib-heatmap.svg || true
+      - name: Inject Medium feed (if any)
+        run: |
+          if python scripts/update_medium_feed.py; then echo "medium feed updated"; else echo "medium feed skipped"; fi
       - name: Commit if changed
         run: |
           git config user.name "glainejustin"
@@ -79,6 +78,6 @@ else:
           if git diff --cached --quiet; then
             echo "no changes"
           else
-            git commit -m "chore(profile): refresh ascii + contrib heatmap"
+            git commit -m "chore(profile): refresh ascii + contrib heatmap + medium feed"
             git push
           fi
